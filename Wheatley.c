@@ -1,12 +1,18 @@
+#include <signal.h>
 #include "util.h"
+#include "pronunce.h"
+
+void sigkill_handler(int signum);
 void gui_init();
 int microphone_init();
-void new_dialog();
+void new_dialog(int id,int pid);
 void kill_dialog();
+int dpid,mpid;
 int main(){
+	Signal(SIGKILL,sigkill_handler);
 	gui_init();
 	int listenfd = open_listenfd("9000");
-	int mpid = microphone_init();
+	mpid = microphone_init();
 	socklen_t clientlen;
 	struct sockaddr_storage clientaddr;
 
@@ -22,11 +28,16 @@ int main(){
 			sscanf(buf, "%d", &id);
 			new_dialog(id,mpid);
 		}else {
-			kill_dialog();
+			kill(dpid,SIGTERM);
 		}
 		close(connfd);
 	}
 	return 0;
+}
+void sigkill_handler(int signum){
+	printf("Bye Bye\n");
+	kill(0,SIGKILL);
+	exit(0);
 }
 
 void gui_init(){
@@ -35,8 +46,13 @@ int microphone_init(){
 	return 0;
 }
 void new_dialog(int id,int pid){
-	
-}
-void kill_dialog(){
+	dpid = fork(); 
+	if (dpid == 0) {
+		char buf0[10],buf1[10];
+		char *buf[] = {buf0,buf1};
+		sprintf(buf0,"%d",id);
+		sprintf(buf1,"%d",pid);
+		execvp("dialog",buf);
+	}
 }
 
