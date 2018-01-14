@@ -3,6 +3,6 @@
 #include <locale.h>
 #include <wchar.h>
 #include <stdio.h>
-wchar_t *recongnition(char* filename);
+char *recongnition(char* filename);
 
 #endif

@@ -1,11 +1,15 @@
-#ifdef __SERVER_H__ 
+#ifndef __SERVER_H__ 
 #define __SERVER_H__
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
 struct server_node{
-	char* path;
-	wchar_t* pattern;
+	char* name;
+	char* pattern;
+	char* cmd;
 };
-wchar_t server_exec(wchar_t input);
-wchar_t server_ins(struct server_node); 
-struct server_node search(wchar_t input );
-wchar_t server_del(int id);
+char server_exec(char input);
+int server_ins(struct server_node); 
+struct server_node* server_search(char input);
+int server_del(int id);
 #endif
