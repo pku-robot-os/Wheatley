@@ -8,7 +8,7 @@ struct server_node{
 	char* pattern;
 	char* cmd;
 };
-char* server_exec(char* input);
+void server_exec(char *input, char *output);
 int server_ins(struct server_node); 
 struct server_node* server_search(char* input);
 int server_del(int id);
