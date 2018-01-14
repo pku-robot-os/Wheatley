@@ -3,6 +3,5 @@
 #include <locale.h>
 #include <wchar.h>
 #include <stdio.h>
-char *recongnition(char* filename);
-
+int recongnition(char* filename, char* input);
 #endif

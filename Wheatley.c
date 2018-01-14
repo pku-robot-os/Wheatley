@@ -5,7 +5,7 @@
 void sigkill_handler(int signum);
 void gui_init();
 int microphone_init();
-void new_dialog(int id,int pid);
+void new_dialog(char* id,int pid);
 void kill_dialog();
 int dpid,mpid;
 int main(){
@@ -24,9 +24,7 @@ int main(){
 		int type;
 		sscanf(buf, "%d", &type);
 		if (type==0) { //new dialog 
-			int id;
-			sscanf(buf, "%d", &id);
-			new_dialog(id,mpid);
+			new_dialog(buf,mpid);
 		}else {
 			kill(dpid,SIGTERM);
 		}
@@ -45,12 +43,11 @@ void gui_init(){
 int microphone_init(){
 	return 0;
 }
-void new_dialog(int id,int pid){
+void new_dialog(char *filename,int pid){
 	dpid = fork(); 
 	if (dpid == 0) {
-		char buf0[10],buf1[10];
-		char *buf[] = {buf0,buf1};
-		sprintf(buf0,"%d",id);
+		char buf1[10];
+		char *buf[] = {filename,buf1};
 		sprintf(buf1,"%d",pid);
 		execvp("dialog",buf);
 	}

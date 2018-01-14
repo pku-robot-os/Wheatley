@@ -1,8 +1,5 @@
 #include "server.h"
 
-#define MAX_NODE 1000
-#define MAX_LINE 1000
-
 static int tot = 0;
 static struct service_node node_list[MAX_NODE];
 static const char* file_name[] = "servicelist";
@@ -19,6 +16,49 @@ int service_ins(char* name, char* pattern, char* cmd) {
     strcpy(node_list[tot].cmd, cmd);
     ++tot;
     return 0;
+}
+
+void server_exec(char *input, char *output){ 
+	const int STDIN = 0, STDOUT = 1;
+	struct server_node *t = server_search(input);
+	int fd1[2], f2[2];
+
+	pid = fork();
+	if(pipe(fd1) == -1 || pipe(fd2) == -1)
+		err_quit("create pipe err.\n");
+
+	if (pid == 0) {
+		close(fd1[1]);
+		close(fd2[0]);
+
+		dup2(STDIN, fd1[0]);
+		dup2(STDOUT, fd2[1]);
+		char *argv = {"bash","-c",t->cmd};
+		execve("bash",argv);
+
+		close(fd1[0]);
+		close(fd2[1]);
+		exit(0);
+	}
+	else {
+		close(fd1[0]);
+		close(fd2[1]);
+
+		// dup2(STDIN, fd2[0]);
+		// dup2(STDOUT, fd1[1]);
+
+		write(fd1[1], input, strlen(input));
+		read(fd2[0], output, strlen(output));
+
+		close(fd1[1]);
+		close(fd2[0]);
+
+	}
+
+	int status;
+	wait(&status);
+
+	return output;
 }
 int service_init() {
     FILE* in = fopen(file_name, "r");
