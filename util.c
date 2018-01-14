@@ -1,5 +1,7 @@
 #include "util.h"
 
+#define MAX_LINE 10000
+
 /************************************
  * Wrappers for Unix signal functions 
  ***********************************/
