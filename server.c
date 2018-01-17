@@ -3,7 +3,7 @@
 static int tot = 0;
 static struct service_node node_list[MAX_NODE];
 static const struct service_node default_service = {"", "", "PKUrobot"};
-static const char* file_name = "servicelist";
+static const char* file_name = "services/servicelist";
 
 int service_ins(char* name, char* pattern, char* cmd) {
 
@@ -28,7 +28,6 @@ int service_ins(char* name, char* pattern, char* cmd) {
     ++tot;
     return 0;
 }
-
 int service_exec(char *input, char *output) {
     const int STDIN = 0, STDOUT = 1;
     const struct service_node *t = service_search(input);
@@ -59,16 +58,24 @@ int service_exec(char *input, char *output) {
     fread(output, MAX_LINE, sizeof(char), out);
     fclose(out);
 }
+
+
 int service_init() {
     puts("Open the data file...");
     FILE* in = fopen(file_name, "r");
     if (in == NULL) {
         puts("The data file is not exist...");
         puts("Create one? (y/n)");
-        char ch;
-        while ((ch = getchar()) && ch != 'y' && ch != 'n')
-            ;
-        if (ch == 'n')
+        char *buf = (char *)malloc(10);
+		size_t sz = 10;
+
+		for (;;) {
+			int len = getline(&buf,&sz,stdin);
+			if (len!=2 || (buf[0] != 'y' && buf[0] != 'n' && buf[0] != 'Y' && buf[0] != 'N')) 
+				puts("Create one? (y/n)");
+			else break;
+		}
+        if (buf[0] == 'n'||buf[0] == 'N')
             return -1;
         in = fopen(file_name, "w+");
         fclose(in);
@@ -79,18 +86,16 @@ int service_init() {
     char name[MAX_LINE] = {};
     char pattern[MAX_LINE] = {};
     char cmd[MAX_LINE] = {};
-    fgets(name, MAX_LINE, in);
     while (!feof(in)) {
+		fgets(name, MAX_LINE, in);
+		if (strlen(name)==1) break;
         fgets(pattern, MAX_LINE, in);
         fgets(cmd, MAX_LINE, in);
         name[strlen(name) - 1] = 0;
         pattern[strlen(pattern) - 1] = 0;
         cmd[strlen(cmd) - 1] = 0;
-        if (feof(in))
-            return -1;
         if (service_ins(name, pattern, cmd) == -1)
             return -1;
-        fgets(name, MAX_LINE, in);
     }
     fclose(in);
     puts("OK");
@@ -151,7 +156,7 @@ int service_del(const struct service_node* pos) {
     for (int i = id; i + 1 < tot; ++i)
         node_list[i] = node_list[i + 1];
     --tot;
-    return 0;
+	return 0;
 }
 
 int service_top(const struct service_node* pos) {
@@ -165,7 +170,7 @@ int service_top(const struct service_node* pos) {
     for (int i = id; i > 0; --i)
         node_list[i] = node_list[i - 1];
     node_list[0] = tmp;
-    return 0;
+	return 0;
 }
 
 int service_run(const struct service_node* pos) {

@@ -29,10 +29,12 @@ int main() {
 	puts("\n-- quit or ctrl+C : exit the program without saving");
 	puts("\n-- exit : save the changes and exit the program");
 	///puts("");
-	char command[MAX_LINE] = {};
+	char *command = (char*) malloc(MAX_LINE);
+	size_t command_MAX_LINE = MAX_LINE;
 	while (1) {
 		printf("\nservice_manager > ");
-		gets(command);
+		int len = getline(&command,&command_MAX_LINE,stdin);
+		command[len-1] = 0;
 		char *p = command;
 		while (*p && !isspace(*p))
 			++p;
@@ -117,7 +119,6 @@ int main() {
 			}
 			else {
 				puts("Save successfully");
-				puts("The program will");
 				exit(0);
 			}
 		}

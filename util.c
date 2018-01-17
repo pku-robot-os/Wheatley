@@ -16,7 +16,7 @@ handler_t *Signal(int signum, handler_t *handler)
     action.sa_flags = SA_RESTART; /* Restart syscalls if possible */
 
     if (sigaction(signum, &action, &old_action) < 0)
-	unix_error("Signal error");
+		fprintf(stderr,"Signal error");
     return (old_action.sa_handler);
 }
 /* $end sigaction */
