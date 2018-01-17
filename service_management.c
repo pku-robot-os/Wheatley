@@ -95,6 +95,12 @@ int main() {
 				printf(" or there is something wrong with system calls\n");
 			}
 		}
+		else if (strcmp(command, "input") == 0) {
+			//puts("The input part");
+			char output[1000]={};
+			service_exec(q, output);
+			printf("The result of your input is:\n%s\n", output);
+		}
 		else if (strcmp(command, "save") == 0) {
 			if (service_save() == -1)
 				puts("Save failed");
@@ -111,8 +117,7 @@ int main() {
 			}
 			else {
 				puts("Save successfully");
-				puts("The program will exit after 3 seconds");
-				sleep(3);
+				puts("The program will");
 				exit(0);
 			}
 		}

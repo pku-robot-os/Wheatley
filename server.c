@@ -28,50 +28,37 @@ int service_ins(char* name, char* pattern, char* cmd) {
     ++tot;
     return 0;
 }
-/*
-void server_exec(char *input, char *output) {
+
+int service_exec(char *input, char *output) {
     const int STDIN = 0, STDOUT = 1;
-    const struct server_node *t = server_search(input);
-    int fd1[2], fd2[2];
+    const struct service_node *t = service_search(input);
+    //printf("Service:\n name: %s\n-- pattern: %s\n-- command: %s\n",
+    //        t->name, t->pattern, t->cmd);
 
-    pid_t pid = fork();
-    if (pipe(fd1) == -1 || pipe(fd2) == -1)
-        //puts("create pipe err.\n");
-        err_quit("create pipe err.\n");
-
-    if (pid == 0) {
-        close(fd1[1]);
-        close(fd2[0]);
-
-        dup2(STDIN, fd1[0]);
-        dup2(STDOUT, fd2[1]);
-        const char *argv[] = {"bash", "-c", t->cmd};
-        execve("bash", argv);
-
-        close(fd1[0]);
-        close(fd2[1]);
-        exit(0);
+    char tmpin[] = "services/tmpin", tmpout[] = "services/tmpout";
+    FILE *in = fopen(tmpin, "w+");
+    if (in == NULL) {
+        puts("There is something wrong with tmp files");
+        return -1;
     }
-    else {
-        close(fd1[0]);
-        close(fd2[1]);
+    fprintf(in, "%s", input);
+    fclose(in);
 
-        // dup2(STDIN, fd2[0]);
-        // dup2(STDOUT, fd1[1]);
-
-        write(fd1[1], input, strlen(input));
-        read(fd2[0], output, strlen(output));
-
-        close(fd1[1]);
-        close(fd2[0]);
-
+    char realcmd[MAX_LINE] = {};
+    sprintf(realcmd, "cd services; %s 0<%s 1>%s", t->cmd, "tmpin", "tmpout");
+    //printf("The command is %s\n", realcmd);
+    if (system(realcmd) == -1) {
+        puts("There is something wrong with system calls");
+        return -1;
     }
-
-    int status;
-    wait(&status);
-
-    return output;
-}*/
+    FILE *out = fopen(tmpout, "r");
+    if (out == NULL) {
+        puts("There is something wrong with tmp files");
+        return -1;
+    }
+    fread(output, MAX_LINE, sizeof(char), out);
+    fclose(out);
+}
 int service_init() {
     puts("Open the data file...");
     FILE* in = fopen(file_name, "r");
@@ -128,9 +115,17 @@ int service_save() {
     return 0;
 }
 
+int service_match(char* input, char* pattern) {
+    regex_t reg;
+    regcomp(&reg, pattern, REG_EXTENDED);
+    regmatch_t pmatch[1];
+    int status = regexec(&reg, input, 1, pmatch, 0);
+    regfree(&reg);
+    return status != REG_NOMATCH;
+}
 const struct service_node* service_search(char* input) {
     for (int i = 0; i < tot; ++i)
-        if (strstr(input, node_list[i].pattern) != NULL)
+        if (service_match(input, node_list[i].pattern))
             return node_list + i;
     return &default_service;
 }
@@ -156,6 +151,7 @@ int service_del(const struct service_node* pos) {
     for (int i = id; i + 1 < tot; ++i)
         node_list[i] = node_list[i + 1];
     --tot;
+    return 0;
 }
 
 int service_top(const struct service_node* pos) {
@@ -169,6 +165,7 @@ int service_top(const struct service_node* pos) {
     for (int i = id; i > 0; --i)
         node_list[i] = node_list[i - 1];
     node_list[0] = tmp;
+    return 0;
 }
 
 int service_run(const struct service_node* pos) {
