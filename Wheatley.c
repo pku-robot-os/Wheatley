@@ -1,6 +1,5 @@
 #include <signal.h>
 #include "util.h"
-#include "pronunce.h"
 
 void sigkill_handler(int signum);
 void gui_init();
@@ -24,7 +23,7 @@ int main(){
 		int type;
 		sscanf(buf, "%d", &type);
 		if (type==0) { //new dialog 
-			new_dialog(buf,mpid);
+			new_dialog(buf+2,mpid);
 		}else {
 			kill(dpid,SIGTERM);
 		}
@@ -43,11 +42,11 @@ void gui_init(){
 int microphone_init(){
 	return 0;
 }
-void new_dialog(char *filename,int pid){
+void new_dialog(char *question,int pid){
 	dpid = fork(); 
 	if (dpid == 0) {
 		char buf1[10];
-		char *buf[] = {filename,buf1};
+		char *buf[] = {question,buf1};
 		sprintf(buf1,"%d",pid);
 		execvp("dialog",buf);
 	}
