@@ -13,11 +13,11 @@ int main() {
 	puts("May I help you?");
 	printf("\n-- add -s <service> -p <pattern> -c <command> : ");
 	printf(" create a new external service named <service>, run <command> when");
-	printf(" the sentences have substring <pattern>.\n");
+	printf(" the sentence has a substring matching the regex <pattern>.\n");
 	puts("   The command must have the three arguments, and the order must be \"-s -p -c\"");
 	printf("   If you already have the external service named <service>, ");
 	printf("then the old one will be replaced.\n");
-	printf("   Mind that <service> and <pattern> can not have character \'-\'\n");
+	printf("   Also, if you are typing commands with Chinese characters, don't use the backspace (\'\\b\'), for there is something wrong with linux characters handling.\n");
 	printf("\n-- printall : print the list of all external services ");
 	printf("by priority in decreasing order\n");
 	printf("\n-- delete <service> : delete the new external service named <service> in the list.\n");
@@ -28,33 +28,48 @@ int main() {
 	puts("\n-- save : save the changes");
 	puts("\n-- quit or ctrl+C : exit the program without saving");
 	puts("\n-- exit : save the changes and exit the program");
-	///puts("");
 	char *command = (char*) malloc(MAX_LINE);
 	size_t command_MAX_LINE = MAX_LINE;
 	while (1) {
 		printf("\nservice_manager > ");
 		int len = getline(&command,&command_MAX_LINE,stdin);
 		command[len-1] = 0;
+		//for(int i=0;i<len-1;++i)
+		//	printf("%d ",command[i]);
 		char *p = command;
 		while (*p && !isspace(*p))
 			++p;
+		//printf("pos=%d len=%d\n",p-command,len);
 		char *q = p;
 		while (isspace(*q))
 			++q;
 
 		*p = 0;
 		if (strcmp(command, "add") == 0) {
+			if (p-command == len-1)
+			{
+				puts("The add command doesn\'t have enough arguments");
+				continue;
+			}
+			char *p1 = strstr(p+1, "-s ");
+			//printf("pos=%d\n",p1-command);
+			char *p2 = p1==NULL ? NULL : strstr(p1, " -p ");
+			//printf("pos=%d\n",p2-command);
+			char *p3 = p2==NULL ? NULL : strstr(p2, " -c ");
+			//printf("pos=%d\n",p3-command);
+			/*
 			char *p1 = q;
 			while(*p1 && *p1!='-') ++p1;
 			char *p2 = *p1 ? p1+1 : p1;
 			while(*p2 && *p2!='-') ++p2;
 			char *p3 = *p2 ? p2+1 : p2;
-			while(*p3 && *p3!='-') ++p3;
-			if(*p3 == 0)
+			while(*p3 && *p3!='-') ++p3;*/
+			if(p3 == NULL)
 				puts("The add command doesn\'t have enough arguments");
-			else if(p1[1]!='s' || p2[1]!='p' || p3[1]!='c')
+			else if(p1[1]!='s' || p2[2]!='p' || p3[2]!='c')
 				puts("The add command doesn\'t have proper arguments");
 			else {
+				++p2, ++p3;
 				char *q1 = p2-1, *q2 = p3-1;
 				while(isspace(*q1)) --q1;
 				while(isspace(*q2)) --q2;
@@ -99,7 +114,7 @@ int main() {
 		}
 		else if (strcmp(command, "input") == 0) {
 			//puts("The input part");
-			char output[1000]={};
+			char output[MAX_LINE]={};
 			service_exec(q, output);
 			printf("The result of your input is:\n%s\n", output);
 		}

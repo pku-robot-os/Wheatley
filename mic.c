@@ -10,7 +10,7 @@ PS: You may need python2.7-dev installed
 char *path = "mic.py";
 char *host = "127.0.0.1";
 char *port = "9000";
-int state = 1;// 1: listen 0: intup
+int state = 1;// 1: listen 0: intup //dddd
 
 void sigusr_handler(int signum);
 void listen(char *str);
@@ -19,7 +19,7 @@ void listen(char *str);
 int main(int argc, char **argv) {
 	Signal(SIGUSR1,sigusr_handler);
 	FILE *f = fopen(path, "r");
-	char str[50];
+	char str[1000];
 	while(1) {
 		// Reset seek pointer, so PyRun_SimpleFile can read from the beginning of file
 		if (state == 1){
@@ -48,6 +48,9 @@ void sigusr_handler(int signum){
 }
 
 void listen(char *str) {
+	
+	/*
+	Python version
 	rewind(f);
 	Py_Initialize();
 
@@ -62,4 +65,5 @@ void listen(char *str) {
 
 	Py_DECREF(v);
 	Py_Finalize();
+	*/
 }
