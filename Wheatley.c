@@ -1,5 +1,6 @@
 #include <signal.h>
 #include "util.h"
+#include "pronounce.h"
 
 void sigkill_handler(int signum);
 void gui_init();
@@ -18,19 +19,22 @@ int main(){
 	while (1) {
 		clientlen = sizeof(clientaddr);
 		int connfd = accept(listenfd, (struct sockaddr *)&clientaddr, &clientlen);
-		char buf[10];
-		read(connfd, buf, 9);
+		char buf[MAXLINE+3];
+		read(connfd, buf, MAXLINE+3);
+		close(connfd);
 		int type;
 		sscanf(buf, "%d", &type);
 		if (type==0) { //new dialog 
 			new_dialog(buf+2,mpid);
-		}else {
+		}else if (type==1){
 			kill(dpid,SIGTERM);
+		}else {//error
+			pronounce("__networkfail");
 		}
-		close(connfd);
 	}
 	return 0;
 }
+
 void sigkill_handler(int signum){
 	printf("Bye Bye\n");
 	kill(0,SIGKILL);
@@ -38,17 +42,26 @@ void sigkill_handler(int signum){
 }
 
 void gui_init(){
+	pid = fork();
+	char *buf[] = {"python3","./mic"}
+	if (pid == 0) {
+		execvp("python3",buf);
+	}
 }
 int microphone_init(){
-	return 0;
+	pid = fork();
+	char *buf[] = {"./mic"};
+	if (pid == 0) {
+		execvp("./mic",buf);
+	}
+	return pid;
 }
 void new_dialog(char *question,int pid){
 	dpid = fork(); 
 	if (dpid == 0) {
-		char buf1[10];
+		char buf1[6];
 		char *buf[] = {question,buf1};
 		sprintf(buf1,"%d",pid);
-		execvp("dialog",buf);
+		execvp("./dialog",buf);
 	}
 }
-
