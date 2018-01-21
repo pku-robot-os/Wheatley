@@ -1,6 +1,5 @@
 #include "util.h"
-#include "speech_rec.h"
-#include "pronunce.h"
+#include "pronounce.h"
 #include "server.h"
 
 int main(int argc, char **argv){
@@ -16,8 +15,8 @@ int main(int argc, char **argv){
 	write(clientfd, input, strlen(input));
 	server_exec(input,output);
 	write(clientfd, output, strlen(output));
-	pronunce(output);
+	pronounce(output);
 	close(clientfd);
-	kill(mpid,SIGUSR1);
+	//kill(mpid,SIGUSR1);
 	return 0;
 }
