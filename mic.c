@@ -10,15 +10,21 @@ PS: You may need python2.7-dev installed
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include "portaudio.h"
 
 #ifndef MAX_LINE
 #define MAX_LINE 1000
 #endif
 
+#define SAMPLERATE 11025
+#define CYCLE 3
+#define LEN (SAMPLERATE*CYCLE)
+
 //char *path = "mic.py";
 char *host = "127.0.0.1";
 char *port = "9002";
 volatile int state = 1;// 1: listen 0: intup //dddd
+float pa_buf[LEN];
 
 void sigusr_handler(int signum);
 void listenwords(char *str);
@@ -31,7 +37,6 @@ int main(int argc, char **argv) {
 	char buf[1000];
 	while(1) {
 		printf("aaaaa\n");
-		// Reset seek pointer, so PyRun_SimpleFile can read from the beginning of file
 		if (state == 1) {
 			listenwords(str);
 			printf("str=%s\n",str);
@@ -48,7 +53,23 @@ int main(int argc, char **argv) {
 			write(clientfd,buf,strlen(buf));
 			close(clientfd);
 		}else {
-			//intr 
+			PaStream *pa;
+			Pa_Initialize();
+			int r = Pa_OpenDefaultStream(&pa, 1, 0, paFloat32, SAMPLERATE, paFramesPerBufferUnspecified, NULL, NULL);
+			if(r != paNoError) {
+				printf("err\n");
+				continue;
+			}
+			Pa_StartStream(pa);
+			Pa_ReadStream(pa, pa_buf, LEN);
+
+			float volume = 0;
+			for(int i = 0; i < LEN; i++) {
+				volume += pa_buf[i]*pa_buf[i];
+			} printf("volume: %f\n", volume);
+			if(volume > 70) {
+				// do intr
+			}
 		}
 	}
 	return 0;
