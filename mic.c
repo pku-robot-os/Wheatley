@@ -36,13 +36,15 @@ int main(int argc, char **argv) {
 	//FILE *f = fopen(path, "r");
 	char str[1000];
 	char buf[1000];
+	int clientfd;
 	while(1) {
 		printf("aaaaa\n");
 		if (state == 1) {
 			listenwords(str);
 			printf("str=%s\n",str);
-			if (strcmp(str, "")==0 || strcmp(str, "Nothing")==0) continue;
-			int clientfd = open_clientfd(host, port);
+			if (strcmp(str, "")==0 || strcmp(str, "Nothing")==0)
+				continue;
+			clientfd = open_clientfd(host, port);
 			if (strcmp(str, "Error")==0) {	
 				sprintf(buf,"%d %s\n",2,str);
 				//send error message
@@ -69,7 +71,7 @@ int main(int argc, char **argv) {
 				volume += pa_buf[i]*pa_buf[i];
 			} printf("volume: %f\n", volume);
 			if(volume > INTR_THRESH) {
-				write(clientfd, "STOP", strlen("STOP"));
+				write(clientfd, "1", strlen("1"));
 			}
 		}
 	}
