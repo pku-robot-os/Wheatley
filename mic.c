@@ -10,7 +10,7 @@ PS: You may need python2.7-dev installed
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include "portaudio.h"
+//#include "portaudio.h"
 
 #ifndef MAX_LINE
 #define MAX_LINE 1000
@@ -39,8 +39,8 @@ int main(int argc, char **argv) {
 	char buf[1000];
 	int clientfd;
 	while(1) {
-		printf("aaaaa\n");
 		if (state == 1) {
+			printf("aaaaa\n");
 			listenwords(str);
 			printf("str=%s\n",str);
 			if (strcmp(str, "")==0 || strcmp(str, "Nothing")==0)
@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
 			write(clientfd,buf,strlen(buf));
 			close(clientfd);
 		}else {
-			PaStream *pa;
+/*			PaStream *pa;
 			Pa_Initialize();
 			int r = Pa_OpenDefaultStream(&pa, 1, 0, paFloat32, SAMPLERATE, paFramesPerBufferUnspecified, NULL, NULL);
 			if(r != paNoError) {
@@ -73,7 +73,7 @@ int main(int argc, char **argv) {
 			} printf("volume: %f\n", volume);
 			if(volume > INTR_THRESH) {
 				write(clientfd, "1", strlen("1"));
-			}
+			}*/
 		}
 	}
 	return 0;
@@ -89,7 +89,7 @@ void listenwords(char *str) {
 	puts("begin to real_listen()");
 	sleep(1);
 	//usleep(300*1000);
-	if(system("./record 1 > listentmp")==-1) {
+	if(system("cd record; ./record 1 > ../listentmp")==-1) {
 		puts("error");
 		sleep(100);
 	}

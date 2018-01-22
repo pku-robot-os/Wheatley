@@ -14,19 +14,20 @@ int main(int argc, char **argv){
 	}
 	int mpid;
 	sscanf(argv[2],"%d",&mpid);
-	int clientfd = open_clientfd("127.0.0.1","9001");
+	//int clientfd = open_clientfd("127.0.0.1","9001");
 	char *input = argv[1];
-	for(int i=0;i<strlen(input);++i)
+	int i;
+	for(i=0;i<strlen(input);++i)
 		printf("%d ",input[i]);
 	puts("");
 	//char input[MAX_LINE];
 	char output[MAX_LINE];
 	//recongnition(argv[1],input);
-	write(clientfd, input, strlen(input));
+	//write(clientfd, input, strlen(input));
 	service_exec(input,output);
-	write(clientfd, output, strlen(output));
+	//write(clientfd, output, strlen(output));
 	pronounce(output);
-	close(clientfd);
+	//close(clientfd);
 	kill(mpid,SIGUSR1);
 	return 0;
 }

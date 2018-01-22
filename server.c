@@ -7,7 +7,8 @@ static const char* file_name = "services/servicelist";
 
 int service_ins(char* name, char* pattern, char* cmd) {
 
-	for (int i = 0; i < tot; ++i)
+	int i;
+	for (i = 0; i < tot; ++i)
 		if (strcmp(node_list[i].name, name) == 0) {
 			free(node_list[i].pattern);
 			free(node_list[i].cmd);
@@ -106,7 +107,8 @@ int service_save() {
 	FILE* out = fopen(file_name, "w+");
 	if (out == NULL)
 		return -1;
-	for (int i = 0; i < tot; ++i) {
+	int i;
+	for (i = 0; i < tot; ++i) {
 		fputs(node_list[i].name, out);
 		fputc('\n', out);
 		fputs(node_list[i].pattern, out);
@@ -132,14 +134,16 @@ int service_match(char* input, char* pattern) {
 }
 const struct service_node* service_search(char* input) {
 //    printf("tot=%d\n",tot);
-	for (int i = 0; i < tot; ++i)
+	int i;
+	for (i = 0; i < tot; ++i)
 		if (service_match(input, node_list[i].pattern))
 			return node_list + i;
 	return &default_service;
 }
 
 const struct service_node* service_search_by_name(char* name) {
-	for (int i = 0; i < tot; ++i)
+	int i;
+	for (i = 0; i < tot; ++i)
 		if (strcmp(name, node_list[i].name) == 0)
 			return node_list + i;
 	if (strcmp(name, default_service.name) == 0)
@@ -156,7 +160,8 @@ int service_del(const struct service_node* pos) {
 	free(node_list[id].name);
 	free(node_list[id].pattern);
 	free(node_list[id].cmd);
-	for (int i = id; i + 1 < tot; ++i)
+	int i;
+	for (i = id; i + 1 < tot; ++i)
 		node_list[i] = node_list[i + 1];
 	--tot;
 	return 0;
@@ -169,8 +174,9 @@ int service_top(const struct service_node* pos) {
 	if (id < 0 || id >= tot)
 		return -1;
 
+	int i;
 	struct service_node tmp = *pos;
-	for (int i = id; i > 0; --i)
+	for (i = id; i > 0; --i)
 		node_list[i] = node_list[i - 1];
 	node_list[0] = tmp;
 	return 0;
@@ -187,7 +193,8 @@ int service_run(const struct service_node* pos) {
 
 void service_printall() {
 	printf("There are %d services\n", tot + 1);
-	for (int i = 0; i < tot; ++i)
+	int i;
+	for (i = 0; i < tot; ++i)
 	{
 		printf("Service %d:\n-- name: %s\n-- pattern: %s\n-- command: %s\n", i + 1,
 			   node_list[i].name, node_list[i].pattern, node_list[i].cmd);

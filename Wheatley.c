@@ -1,6 +1,7 @@
 #include <signal.h>
 #include "util.h"
-#include "pronounce.h"
+#include "server.h"
+#include "pronounce/pronounce.h"
 
 void sigkill_handler(int signum);
 void gui_init();
@@ -19,8 +20,9 @@ int main(){
 	while (1) {
 		clientlen = sizeof(clientaddr);
 		int connfd = accept(listenfd, (struct sockaddr *)&clientaddr, &clientlen);
-		char buf[MAXLINE+3];
-		read(connfd, buf, MAXLINE+3);
+		char buf[MAX_LINE+3];
+		memset(buf,0,sizeof(buf));
+		read(connfd, buf, MAX_LINE+3);
 		close(connfd);
 		int type;
 		sscanf(buf, "%d", &type);
@@ -42,15 +44,15 @@ void sigkill_handler(int signum){
 }
 
 void gui_init(){
-	pid = fork();
-	char *buf[] = {"python3","./mic"}
+	int pid = fork();
+	char *buf[] = {"python3","gui/gui.py",NULL};
 	if (pid == 0) {
 		execvp("python3",buf);
 	}
 }
 int microphone_init(){
-	pid = fork();
-	char *buf[] = {"./mic"};
+	int pid = fork();
+	char *buf[] = {"./mic",NULL};
 	if (pid == 0) {
 		execvp("./mic",buf);
 	}
@@ -60,7 +62,7 @@ void new_dialog(char *question,int pid){
 	dpid = fork(); 
 	if (dpid == 0) {
 		char buf1[6];
-		char *buf[] = {question,buf1};
+		char *buf[] = {"./dialog",question,buf1,NULL};
 		sprintf(buf1,"%d",pid);
 		execvp("./dialog",buf);
 	}
