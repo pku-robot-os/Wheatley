@@ -32,31 +32,35 @@ void listenwords(char *str);
 
 
 int main(int argc, char **argv) {
-	puts("Now in mic.c");
+	printf("%d\n",getegid());
 	Signal(SIGUSR1,sigusr_handler);
-	//FILE *f = fopen(path, "r");
 	char str[1000];
 	char buf[1000];
 	int clientfd;
+	int cnt=0;
 	while(1) {
 		if (state == 1) {
-			printf("aaaaa\n");
 			listenwords(str);
 			printf("str=%s\n",str);
 			if (strcmp(str, "")==0 || strcmp(str, "Nothing")==0)
 				continue;
 			clientfd = open_clientfd(host, port);
+			if (clientfd < 0) exit(0);
 			if (strcmp(str, "Error")==0) {	
 				sprintf(buf,"%d %s\n",2,str);
 				//send error message
 			}else {
 				sprintf(buf,"%d %s\n",0,str);
 				//get the true message 
+				cnt = 0;
 				state = 0;
 			}
 			write(clientfd,buf,strlen(buf));
 			close(clientfd);
 		}else {
+			sleep(1);
+			cnt++;
+			if (cnt>30) exit(0);
 /*			PaStream *pa;
 			Pa_Initialize();
 			int r = Pa_OpenDefaultStream(&pa, 1, 0, paFloat32, SAMPLERATE, paFramesPerBufferUnspecified, NULL, NULL);
