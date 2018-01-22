@@ -4,7 +4,7 @@ static int tot = 0;
 static struct service_node node_list[MAX_NODE];
 static const struct service_node default_service = {"", "", "python3 default.py"};
 static const char* file_name = "services/servicelist";
-
+static const char split_char = 28;
 int service_ins(char* name, char* pattern, char* cmd) {
 
 	int i;
@@ -60,7 +60,28 @@ int service_exec(char *input, char *output) {
 	fclose(out);
 }
 
-
+int readblock(FILE* in, char *buf,int len)
+{
+	if(len<=1)
+	{
+		*buf=0;
+		return 0;
+	}
+	char ch;
+	while((ch=fgetc(in))!=EOF && ch==split_char)
+		;
+	if(ch==EOF)
+	{
+		*buf=0;
+		return 0;
+	}	
+	int pos=0;
+	buf[pos++]=ch;
+	while(pos+1<len && (ch=fgetc(in))!=EOF && ch!=split_char)
+		buf[pos++]=ch;
+	buf[pos]=0;
+	return pos;
+}
 int service_init() {
 	puts("Open the data file...");
 	FILE* in = fopen(file_name, "r");
@@ -88,17 +109,16 @@ int service_init() {
 	char pattern[MAX_LINE] = {};
 	char cmd[MAX_LINE] = {};
 	while (!feof(in)) {
-		fgets(name, MAX_LINE, in);
-		if (strlen(name)<=1) break;
-		fgets(pattern, MAX_LINE, in);
-		fgets(cmd, MAX_LINE, in);
-		name[strlen(name) - 1] = 0;
-		pattern[strlen(pattern) - 1] = 0;
-		cmd[strlen(cmd) - 1] = 0;
+		int a = readblock(in, name, MAX_LINE);
+		int b = readblock(in, pattern, MAX_LINE);
+		int c = readblock(in, cmd, MAX_LINE);
+		if(a == 0)
+			break;
+		if(c == 0)
+			return -1;
 		if (service_ins(name, pattern, cmd) == -1)
 			return -1;
 	}
-	tot--;
 	fclose(in);
 	puts("OK");
 	return 0;
@@ -110,7 +130,7 @@ int service_save() {
 		return -1;
 	int i;
 	for (i = 0; i < tot; ++i) {
-		fprintf(out, "%s\n%s\n%s\n", node_list[i].name, node_list[i].pattern, node_list[i].cmd);
+		fprintf(out, "%s%c%s%c%s%c", node_list[i].name, split_char, node_list[i].pattern, split_char, node_list[i].cmd, split_char);
 		fflush(out);
 	}
 	fclose(out);
