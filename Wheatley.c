@@ -9,6 +9,7 @@ int microphone_init();
 void new_dialog(char* id,int pid);
 void kill_dialog();
 int dpid,mpid;
+int pid;
 int main(){
 	Signal(SIGKILL,sigkill_handler);
 	//gui_init();

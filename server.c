@@ -98,6 +98,7 @@ int service_init() {
 		if (service_ins(name, pattern, cmd) == -1)
 			return -1;
 	}
+	tot--;
 	fclose(in);
 	puts("OK");
 	return 0;
@@ -108,13 +109,9 @@ int service_save() {
 	if (out == NULL)
 		return -1;
 	int i;
-	for (i = 0; i < tot; ++i) {
-		fputs(node_list[i].name, out);
-		fputc('\n', out);
-		fputs(node_list[i].pattern, out);
-		fputc('\n', out);
-		fputs(node_list[i].cmd, out);
-		fputc('\n', out);
+	for (int i = 0; i < tot; ++i) {
+		fprintf(out, "%s\n%s\n%s\n", node_list[i].name, node_list[i].pattern, node_list[i].cmd);
+		fflush(out);
 	}
 	fclose(out);
 	return 0;
