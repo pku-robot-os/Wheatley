@@ -244,7 +244,7 @@ static void demo_mic(const char* session_begin_params)
 		printf("start listen failed %d\n", errcode);
 	}
 	/* demo 15 seconds recording */
-	while(i++ < 15)
+	while(i++ < 5)
 		sleep(1);
 	errcode = sr_stop_listening(&iat);
 	if (errcode) {
@@ -280,35 +280,15 @@ int main(int argc, char* argv[])
 	 * */
 	ret = MSPLogin(NULL, NULL, login_params);
 	if (MSP_SUCCESS != ret)	{
-		printf("MSPLogin failed , Error code %d.\n",ret);
+		fprintf(stderr,"MSPLogin failed , Error code %d.\n",ret);
 		goto exit; // login fail, exit the program
 	}
 
-	printf("Want to upload the user words ? \n0: No.\n1: Yes\n");
-	scanf("%d", &upload_on);
-	if (upload_on)
-	{
-		printf("Uploading the user words ...\n");
-		ret = upload_userwords();
-		if (MSP_SUCCESS != ret)
-			goto exit;	
-		printf("Uploaded successfully\n");
-	}
+	fprintf(stderr,"Demo recognizing the speech from microphone\n");
 
-	printf("Where the audio comes from?\n"
-			"0: From a audio file.\n1: From microphone.\n");
-	scanf("%d", &aud_src);
-	if(aud_src != 0) {
-		printf("Demo recognizing the speech from microphone\n");
-		printf("Speak in 15 seconds\n");
+	demo_mic(session_begin_params);
 
-		demo_mic(session_begin_params);
-
-		printf("15 sec passed\n");
-	} else {
-		printf("Demo recgonizing the speech from a recorded audio file\n");
-		demo_file("wav/iflytek02.wav", session_begin_params); 
-	}
+	fprintf(stderr,"5 sec passed\n");
 exit:
 	MSPLogout(); // Logout...
 
