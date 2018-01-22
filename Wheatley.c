@@ -1,6 +1,7 @@
 #include <signal.h>
 #include "util.h"
-#include "pronounce.h"
+#include "server.h"
+#include "pronounce/pronounce.h"
 
 void sigkill_handler(int signum);
 void gui_init();
@@ -8,6 +9,7 @@ int microphone_init();
 void new_dialog(char* id,int pid);
 void kill_dialog();
 int dpid,mpid;
+int pid;
 int main(){
 	Signal(SIGKILL,sigkill_handler);
 	//gui_init();
@@ -19,8 +21,8 @@ int main(){
 	while (1) {
 		clientlen = sizeof(clientaddr);
 		int connfd = accept(listenfd, (struct sockaddr *)&clientaddr, &clientlen);
-		char buf[MAXLINE+3];
-		read(connfd, buf, MAXLINE+3);
+		char buf[MAX_LINE+3];
+		read(connfd, buf, MAX_LINE+3);
 		close(connfd);
 		int type;
 		sscanf(buf, "%d", &type);
@@ -43,7 +45,7 @@ void sigkill_handler(int signum){
 
 void gui_init(){
 	pid = fork();
-	char *buf[] = {"python3","./mic"}
+	char *buf[] = {"python3","./mic"};
 	if (pid == 0) {
 		execvp("python3",buf);
 	}
