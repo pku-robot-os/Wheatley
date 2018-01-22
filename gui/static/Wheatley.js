@@ -4,7 +4,7 @@
  */
     //全局变量
     var canvas, ctx, w, h, centerX, centerY;
-	var context;
+	var question,answer;
     var imgOut = document.createElement('img'),
         imgIn = document.createElement('img');
     imgOut.src = 'static/JorDDgUVJljaIxDBpiBM.png';
@@ -18,7 +18,8 @@ function httpGet(theUrl)
 }
 function timedCount(){
 	ctx.clearRect(0, 0, w, h);
-	context = httpGet('query')
+	question = httpGet('question')
+	answer = httpGet('answer')
 	t=setTimeout("timedCount()",1000)
 }
 
@@ -424,7 +425,8 @@ function timedCount(){
 		ctx.textAlign = 'center';//设置文本的水平对齐方式
 		ctx.fillStyle = 'cornflowerblue';
 		ctx.strokeStyle = 'cornflowerblue';
-		ctx.fillText(context,w/2,100);
+		ctx.fillText(answer,w/2,100);
+		ctx.fillText(question,w/2,500);
     }
 
     init();
