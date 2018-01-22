@@ -88,14 +88,12 @@ int service_init() {
 	char cmd[MAX_LINE] = {};
 	while (!feof(in)) {
 		fgets(name, MAX_LINE, in);
-		printf("name length1: %d\n", strlen(name));
 		if (strlen(name)<=1) break;
 		fgets(pattern, MAX_LINE, in);
 		fgets(cmd, MAX_LINE, in);
 		name[strlen(name) - 1] = 0;
 		pattern[strlen(pattern) - 1] = 0;
 		cmd[strlen(cmd) - 1] = 0;
-		printf("name length2: %d\n", strlen(name));
 		if (service_ins(name, pattern, cmd) == -1)
 			return -1;
 	}
