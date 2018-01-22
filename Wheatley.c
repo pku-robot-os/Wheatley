@@ -10,7 +10,7 @@ void kill_dialog();
 int dpid,mpid;
 int main(){
 	Signal(SIGKILL,sigkill_handler);
-	gui_init();
+	//gui_init();
 	int listenfd = open_listenfd("9000");
 	mpid = microphone_init();
 	socklen_t clientlen;
