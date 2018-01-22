@@ -4,6 +4,7 @@
 #include "pronounce/pronounce.h"
 
 void sigint_handler(int signum);
+void sigchld_handler(int signum);
 int gui_init();
 int microphone_init();
 void new_dialog(char* id,int pid);
@@ -13,6 +14,7 @@ int dpid;
 int pid;
 int main(){
 	Signal(SIGINT,sigint_handler);
+	Signal(SIGCHLD,sigchld_handler);
 	gpid = gui_init();
 	int listenfd = open_listenfd("9000");
 	mpid = microphone_init();
@@ -27,10 +29,10 @@ int main(){
 		read(connfd, buf, MAX_LINE+3);
 		close(connfd);
 		int type;
-		puts(buf);
+		//puts(buf);
 		sscanf(buf, "%d", &type);
 		if (type==0) { //new dialog
-			if (strstr(buf, "再见") !=NULL) {
+			if (strstr(buf, "再见") !=NULL || strstr(buf, "关机") !=NULL) {
 				const char* output = "再见，我关机啦。";
 				int clientfd = open_clientfd("127.0.0.1","9002");
 				write(clientfd, output, strlen(output));
@@ -54,6 +56,10 @@ void sigint_handler(int signum){
 	kill(mpid,SIGKILL);
 	kill(gpid,SIGKILL);
 	exit(0);
+}
+void sigchld_handler(int signum){
+	while(waitpid(-1, NULL, WNOHANG) > 0)
+		;
 }
 int gui_init(){
 	int pid = fork();
