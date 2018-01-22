@@ -2,7 +2,7 @@
 
 static int tot = 0;
 static struct service_node node_list[MAX_NODE];
-static const struct service_node default_service = {"", "", "PKUrobot"};
+static const struct service_node default_service = {"", "", "python3 default.py"};
 static const char* file_name = "services/servicelist";
 
 int service_ins(char* name, char* pattern, char* cmd) {
@@ -31,9 +31,10 @@ int service_ins(char* name, char* pattern, char* cmd) {
 int service_exec(char *input, char *output) {
     const int STDIN = 0, STDOUT = 1;
     const struct service_node *t = service_search(input);
-    //printf("Service:\n name: %s\n-- pattern: %s\n-- command: %s\n",
-    //        t->name, t->pattern, t->cmd);
-
+	printf("service_exec\n");
+	for(int i=0;i<strlen(input);++i)
+		printf("%d ",input[i]);
+	puts("");
     char tmpin[] = "services/tmpin", tmpout[] = "services/tmpout";
     FILE *in = fopen(tmpin, "w+");
     if (in == NULL) {
@@ -45,7 +46,6 @@ int service_exec(char *input, char *output) {
 
     char realcmd[MAX_LINE] = {};
     sprintf(realcmd, "cd services; %s 0<%s 1>%s", t->cmd, "tmpin", "tmpout");
-    //printf("The command is %s\n", realcmd);
     if (system(realcmd) == -1) {
         puts("There is something wrong with system calls");
         return -1;
@@ -88,7 +88,7 @@ int service_init() {
     char cmd[MAX_LINE] = {};
     while (!feof(in)) {
 		fgets(name, MAX_LINE, in);
-		if (strlen(name)==1) break;
+		if (strlen(name)<=1) break;
         fgets(pattern, MAX_LINE, in);
         fgets(cmd, MAX_LINE, in);
         name[strlen(name) - 1] = 0;
@@ -99,8 +99,6 @@ int service_init() {
     }
     fclose(in);
     puts("OK");
-    //if (tot == 0)
-    //    return -1;
     return 0;
 }
 
@@ -127,8 +125,13 @@ int service_match(char* input, char* pattern) {
     int status = regexec(&reg, input, 1, pmatch, 0);
     regfree(&reg);
     return status != REG_NOMATCH;
+    /* substring version
+    char *tmp = strstr(input,pattern);
+    printf("%p %d\n",tmp, tmp-input);
+    return strstr(input, pattern) != NULL; */
 }
 const struct service_node* service_search(char* input) {
+    printf("tot=%d\n",tot);
     for (int i = 0; i < tot; ++i)
         if (service_match(input, node_list[i].pattern))
             return node_list + i;
@@ -176,14 +179,19 @@ int service_top(const struct service_node* pos) {
 int service_run(const struct service_node* pos) {
     if (pos == NULL)
         return -1;
-    return system(pos->cmd);
+    char tmp[MAX_LINE]={};
+    sprintf(tmp, "cd services; %s; cd ..", pos->cmd);
+    return system(tmp);
+    //return system("cd services;" pos->cmd "; cd ..");
 }
 
 void service_printall() {
     printf("There are %d services\n", tot + 1);
     for (int i = 0; i < tot; ++i)
-        printf("Service %d:\n-- name: %s\n-- pattern: %s\n-- command: %s\n", i + 1,
+    {
+    	printf("Service %d:\n-- name: %s\n-- pattern: %s\n-- command: %s\n", i + 1,
                node_list[i].name, node_list[i].pattern, node_list[i].cmd);
+    }
     printf("default_service:\n-- command: %s\n", default_service.cmd);
 }
 /*
