@@ -17,7 +17,11 @@ int main(){
 	int listenfd = open_listenfd("9000");
 	mpid = microphone_init();
 	socklen_t clientlen;
+
 	struct sockaddr_storage clientaddr;
+	int clientfd = open_clientfd("127.0.0.1","9002");
+	pronounce("你好我是Wheatley");
+	close(clientfd);
 
 	while (1) {
 		clientlen = sizeof(clientaddr);
