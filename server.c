@@ -4,7 +4,7 @@ static int tot = 0;
 static struct service_node node_list[MAX_NODE];
 static const struct service_node default_service = {"", "", "python3 default.py"};
 static const char* file_name = "services/servicelist";
-static const char split_char = 28;
+static const char split_char = -2;
 int service_ins(char* name, char* pattern, char* cmd) {
 
 	int i;
