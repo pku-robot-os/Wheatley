@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
 				volume += pa_buf[i]*pa_buf[i];
 			} printf("volume: %f\n", volume);
 			if(volume > INTR_THRESH) {
-				// do intr
+				write(clientfd, "STOP", strlen("STOP"));
 			}
 		}
 	}
