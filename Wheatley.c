@@ -4,21 +4,20 @@
 #include "pronounce/pronounce.h"
 
 void sigint_handler(int signum);
-void gui_init();
+int gui_init();
 int microphone_init();
 void new_dialog(char* id,int pid);
 void kill_dialog();
+volatile int gpid, mpid;
 int dpid;
-int mpid;
 int pid;
 int main(){
 	Signal(SIGINT,sigint_handler);
-	//gui_init();
+	gpid = gui_init();
 	int listenfd = open_listenfd("9000");
 	mpid = microphone_init();
 	socklen_t clientlen;
 	struct sockaddr_storage clientaddr;
-	printf("%d\n",getegid());
 
 	while (1) {
 		clientlen = sizeof(clientaddr);
@@ -45,13 +44,13 @@ void sigint_handler(int signum){
 	kill(mpid,SIGKILL);
 	exit(0);
 }
-
-void gui_init(){
+int gui_init(){
 	int pid = fork();
 	char *buf[] = {"python3","gui/gui.py",NULL};
 	if (pid == 0) {
 		execvp("python3",buf);
 	}
+	return pid;
 }
 int microphone_init(){
 	int pid = fork();

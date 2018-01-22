@@ -6,6 +6,9 @@ import threading
 import sys
 lock = threading.Lock()
 dialog = 'test'
+import logging
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
 
 app = Flask(__name__)
 
@@ -30,8 +33,7 @@ if __name__ == '__main__':
     t = threading.Thread(target=flaskThread, args=())
     t.start()
 
-    chrome = webbrowser.get('Chrome')
-    chrome.open('http://127.0.0.1:5000/')
+    webbrowser.open('http://127.0.0.1:5000/')
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind(('127.0.0.1', 9002))
     s.listen(5)

@@ -14,7 +14,6 @@ int main(int argc, char **argv){
 	}
 	int mpid;
 	sscanf(argv[2],"%d",&mpid);
-	//int clientfd = open_clientfd("127.0.0.1","9001");
 	char *input = argv[1];
 	int i;
 	for(i=0;i<strlen(input);++i)
@@ -25,9 +24,10 @@ int main(int argc, char **argv){
 	//recongnition(argv[1],input);
 	//write(clientfd, input, strlen(input));
 	service_exec(input,output);
-	//write(clientfd, output, strlen(output));
+	int clientfd = open_clientfd("127.0.0.1","9002");
+	write(clientfd, output, strlen(output));
+	close(clientfd);
 	pronounce(output);
-	//close(clientfd);
 	kill(mpid,SIGUSR1);
 	return 0;
 }

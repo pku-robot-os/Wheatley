@@ -109,7 +109,7 @@ int service_save() {
 	if (out == NULL)
 		return -1;
 	int i;
-	for (int i = 0; i < tot; ++i) {
+	for (i = 0; i < tot; ++i) {
 		fprintf(out, "%s\n%s\n%s\n", node_list[i].name, node_list[i].pattern, node_list[i].cmd);
 		fflush(out);
 	}

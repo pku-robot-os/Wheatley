@@ -390,8 +390,6 @@ int pronounce(const char* text)
 	}
 
 exit:
-	printf("按任意键退出 ...\n");
-	getchar();
 	MSPLogout(); //退出登录
 
 	return 0;
