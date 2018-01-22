@@ -27,6 +27,7 @@ int main(){
 		read(connfd, buf, MAX_LINE+3);
 		close(connfd);
 		int type;
+		puts(buf);
 		sscanf(buf, "%d", &type);
 		if (type==0) { //new dialog 
 			new_dialog(buf+2,mpid);
@@ -42,6 +43,7 @@ int main(){
 void sigint_handler(int signum){
 	printf("Bye Bye\n");
 	kill(mpid,SIGKILL);
+	kill(gpid,SIGKILL);
 	exit(0);
 }
 int gui_init(){

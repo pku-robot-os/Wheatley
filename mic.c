@@ -1,16 +1,9 @@
-/*
-Description: Run python script "mic.py" in C.
-Compile: gcc -I/usr/include/python2.7 <filename>.c -o <filename> -lpython2.7
-Run: ./<filename> mic.py
-PS: You may need python2.7-dev installed
-*/
-//#include <Python.h>
 #include "util.h"
 #include <stdio.h>
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-//#include "portaudio.h"
+#include "portaudio.h"
 
 #ifndef MAX_LINE
 #define MAX_LINE 1000
@@ -39,6 +32,7 @@ int main(int argc, char **argv) {
 	int clientfd;
 	int cnt=0;
 	while(1) {
+		printf("%d\n",state);
 		if (state == 1) {
 			listenwords(str);
 			printf("str=%s\n",str);
@@ -58,10 +52,7 @@ int main(int argc, char **argv) {
 			write(clientfd,buf,strlen(buf));
 			close(clientfd);
 		}else {
-			sleep(1);
-			cnt++;
-			if (cnt>30) exit(0);
-/*			PaStream *pa;
+			PaStream *pa;
 			Pa_Initialize();
 			int r = Pa_OpenDefaultStream(&pa, 1, 0, paFloat32, SAMPLERATE, paFramesPerBufferUnspecified, NULL, NULL);
 			if(r != paNoError) {
@@ -72,12 +63,18 @@ int main(int argc, char **argv) {
 			Pa_ReadStream(pa, pa_buf, LEN);
 
 			float volume = 0;
-			for(int i = 0; i < LEN; i++) {
+			int i;
+			for(i = 0; i < LEN; i++) {
 				volume += pa_buf[i]*pa_buf[i];
-			} printf("volume: %f\n", volume);
+			} 
+			printf("volume: %f\n", volume);
 			if(volume > INTR_THRESH) {
-				write(clientfd, "1", strlen("1"));
-			}*/
+				char *tmp = "1";
+				clientfd = open_clientfd(host, port);
+				write(clientfd, tmp, strlen(tmp));
+				close(clientfd);
+				state = 1;
+			}
 		}
 	}
 	return 0;
@@ -91,7 +88,6 @@ void listenwords(char *str) {
 	
 	const char* tmp = "listentmp";
 	puts("begin to real_listen()");
-	sleep(1);
 	//usleep(300*1000);
 	if(system("cd record; ./record 1 > ../listentmp")==-1) {
 		puts("error");
