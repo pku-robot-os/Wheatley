@@ -27,6 +27,6 @@ int main(int argc, char **argv){
 	write(clientfd, output, strlen(output));
 	pronounce(output);
 	close(clientfd);
-	//kill(mpid,SIGUSR1);
+	kill(mpid,SIGUSR1);
 	return 0;
 }
