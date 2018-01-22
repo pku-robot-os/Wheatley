@@ -5,9 +5,9 @@
 #include <alsa/asoundlib.h>
 #include <signal.h>
 
-#include "pronounce/qtts.h"
-#include "pronounce/msp_cmn.h"
-#include "pronounce/msp_errors.h"
+#include "qtts.h"
+#include "msp_cmn.h"
+#include "msp_errors.h"
 #include "pronounce.h"
 
 
