@@ -42,6 +42,7 @@ int main(){
 void sigint_handler(int signum){
 	printf("Bye Bye\n");
 	kill(mpid,SIGKILL);
+	kill(gpid,SIGKILL);
 	exit(0);
 }
 int gui_init(){
