@@ -19,6 +19,7 @@ PS: You may need python2.7-dev installed
 #define SAMPLERATE 11025
 #define CYCLE 3
 #define LEN (SAMPLERATE*CYCLE)
+#define INTR_THRESH 70
 
 //char *path = "mic.py";
 char *host = "127.0.0.1";
@@ -67,7 +68,7 @@ int main(int argc, char **argv) {
 			for(int i = 0; i < LEN; i++) {
 				volume += pa_buf[i]*pa_buf[i];
 			} printf("volume: %f\n", volume);
-			if(volume > 70) {
+			if(volume > INTR_THRESH) {
 				// do intr
 			}
 		}
