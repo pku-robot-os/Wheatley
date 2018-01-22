@@ -17,7 +17,7 @@ PS: You may need python2.7-dev installed
 
 //char *path = "mic.py";
 char *host = "127.0.0.1";
-char *port = "9002";
+char *port = "9000";
 volatile int state = 1;// 1: listen 0: intup //dddd
 
 void sigusr_handler(int signum);
@@ -25,16 +25,20 @@ void listenwords(char *str);
 
 
 int main(int argc, char **argv) {
+	puts("Now in mic.c");
 	Signal(SIGUSR1,sigusr_handler);
 	//FILE *f = fopen(path, "r");
 	char str[1000];
 	char buf[1000];
 	while(1) {
-		printf("aaaaa\n");
 		// Reset seek pointer, so PyRun_SimpleFile can read from the beginning of file
 		if (state == 1) {
 			listenwords(str);
 			printf("str=%s\n",str);
+			printf("strlen=%d\n",strlen(str));
+			for(int i=0;i<strlen(str);++i)
+				printf("%d ",str[i]);
+			puts("");
 			if (strcmp(str, "")==0 || strcmp(str, "Nothing")==0) continue;
 			int clientfd = open_clientfd(host, port);
 			if (strcmp(str, "Error")==0) {	
