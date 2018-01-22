@@ -31,7 +31,12 @@ int main(){
 		sscanf(buf, "%d", &type);
 		if (type==0) { //new dialog
 			if (strstr(buf, "再见") !=NULL) {
-				pronounce("再见，我关机啦。");
+				const char* output = "再见，我关机啦。";
+				int clientfd = open_clientfd("127.0.0.1","9002");
+				write(clientfd, output, strlen(output));
+				close(clientfd);
+				pronounce(output);
+				system("pkill firefox");
 				kill(0, SIGINT);
 			}
 			new_dialog(buf+2,mpid);
