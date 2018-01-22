@@ -3,20 +3,22 @@
 #include "server.h"
 #include "pronounce/pronounce.h"
 
-void sigkill_handler(int signum);
+void sigint_handler(int signum);
 void gui_init();
 int microphone_init();
 void new_dialog(char* id,int pid);
 void kill_dialog();
-int dpid,mpid;
+int dpid;
+int mpid;
 int pid;
 int main(){
-	Signal(SIGKILL,sigkill_handler);
+	Signal(SIGINT,sigint_handler);
 	//gui_init();
 	int listenfd = open_listenfd("9000");
 	mpid = microphone_init();
 	socklen_t clientlen;
 	struct sockaddr_storage clientaddr;
+	printf("%d\n",getegid());
 
 	while (1) {
 		clientlen = sizeof(clientaddr);
@@ -38,9 +40,9 @@ int main(){
 	return 0;
 }
 
-void sigkill_handler(int signum){
+void sigint_handler(int signum){
 	printf("Bye Bye\n");
-	kill(0,SIGKILL);
+	kill(mpid,SIGKILL);
 	exit(0);
 }
 
