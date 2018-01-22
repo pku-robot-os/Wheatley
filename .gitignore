@@ -52,3 +52,13 @@ Mkfile.old
 dkms.conf
 
 *.wav
+listentmp
+*msc*
+*/tmpvoice.wav
+*.DS_Store*
+*.swp
+Wheatley
+dialog
+manager
+mic
+record/record

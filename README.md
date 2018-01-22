@@ -3,13 +3,13 @@
 Wheatley is a chatting robot that we made as a project in PKU EECS operator system 
 
 
-###requirement:
+### requirement:
 Linux 
 gcc
 python3 
 [PortAudio](http://www.portaudio.com/)
 
-###Install 
+### Install 
 For x86 user, try `sudo ./build_x86.sh`
 For x64 user, try `sudo ./build_x64.sh`
 
