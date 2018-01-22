@@ -20,11 +20,13 @@ int main() {
 	printf("   Also, if you are typing commands with Chinese characters, don't use the backspace (\'\\b\'), for there is something wrong with linux characters handling.\n");
 	printf("\n-- printall : print the list of all external services ");
 	printf("by priority in decreasing order\n");
-	printf("\n-- delete <service> : delete the new external service named <service> in the list.\n");
-	printf("\n-- top <service> : set the service named <service> the highest priority ");
-	printf("other services will keep the order\n");
+	printf("\n-- delete <service> : delete the external service named <service> in the list.\n");
+	printf("\n-- top <service> : set the service named <service> the highest priority, ");
+	printf("and the other services will keep their relative priority\n");
 	printf("\n-- run [<service>] : run the command of <service> if <service> exist\n");
 	printf("   run the default service if <service> is not given.\n");
+	printf("\n-- input <content> : chat with the robot by text, the <content> is what we says to him.\n");
+	printf("   mind that the robot may use some services which are recorded in this process but have not been saved to the servicelist. To save them, use the save command.\n");
 	puts("\n-- save : save the changes");
 	puts("\n-- quit or ctrl+C : exit the program without saving");
 	puts("\n-- exit : save the changes and exit the program");
