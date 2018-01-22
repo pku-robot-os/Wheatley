@@ -342,8 +342,9 @@ int text_to_speech(const char* src_text, const char* des_path, const char* param
 
 	return ret;
 }
+
 int pronounce(const char* text)
-int main()
+//int main()
 {
 
 	int         ret                  = MSP_SUCCESS;
@@ -360,7 +361,7 @@ int main()
 	*/
 	const char* session_begin_params = "voice_name = xiaofeng, text_encoding = utf8, sample_rate = 16000, speed = 50, volume = 50, pitch = 50, rdn = 2";
 	const char* filename             = "voice/tmpvoice.wav"; //合成的语音文件名称
-	const char* text = "Hello, I'm Tom. How are you?";
+	//const char* text = "Hello, I'm Tom. How are you?";
 
 	/* 用户登录 */
 	ret = MSPLogin(NULL, NULL, login_params);//第一个参数是用户名，第二个参数是密码，第三个参数是登录参数，用户名和密码可在http://www.xfyun.cn注册获取
