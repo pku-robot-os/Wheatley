@@ -5,9 +5,9 @@
 #include <alsa/asoundlib.h>
 #include <signal.h>
 
-#include "pronounce/qtts.h"
-#include "pronounce/msp_cmn.h"
-#include "pronounce/msp_errors.h"
+#include "qtts.h"
+#include "msp_cmn.h"
+#include "msp_errors.h"
 #include "pronounce.h"
 
 
@@ -342,8 +342,7 @@ int text_to_speech(const char* src_text, const char* des_path, const char* param
 
 	return ret;
 }
-
-//int pronounce(const char* text)
+int pronounce(const char* text)
 int main()
 {
 

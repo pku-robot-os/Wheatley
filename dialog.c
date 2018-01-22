@@ -1,5 +1,5 @@
 #include "util.h"
-#include "pronounce.h"
+#include "pronounce/pronounce.h"
 #include "server.h"
 
 int main(int argc, char **argv){
