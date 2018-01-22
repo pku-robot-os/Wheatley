@@ -6,7 +6,7 @@ import threading
 import sys
 import time
 lock = threading.Lock()
-dialog = 'test'
+dialog = '' # 'test'
 import logging
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)

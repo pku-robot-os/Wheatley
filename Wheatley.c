@@ -29,7 +29,11 @@ int main(){
 		int type;
 		puts(buf);
 		sscanf(buf, "%d", &type);
-		if (type==0) { //new dialog 
+		if (type==0) { //new dialog
+			if (strstr(buf, "再见") !=NULL) {
+				pronounce("再见，我关机啦。");
+				kill(0, SIGINT);
+			}
 			new_dialog(buf+2,mpid);
 		}else if (type==1){
 			kill(dpid,SIGTERM);
