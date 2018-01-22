@@ -1,8 +1,8 @@
 
 build: 
-	gcc -o manager service_management.c server.c
-	gcc -o mic mic.c -I/usr/include/python2.7 -lpython2.7
-	rm *.o
-
+	gcc dialog.c util.c pronounce.c server.c ./libmsc.so -lasound -o dialog
+	gcc mic.c util.c -lportaudio -lrt -lm -lasound -ljack -pthread -o ./mic
+	gcc Wheatley.c util.c pronounce.c ./libmsc.so -lasound -o Wheatley
+	gcc service_management.c server.c -o manager
 clean:
 	rm *.o 
