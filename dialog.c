@@ -22,9 +22,10 @@ int main(int argc, char **argv){
 	//char input[MAX_LINE];
 	char output[MAX_LINE];
 	//recongnition(argv[1],input);
-	//write(clientfd, input, strlen(input));
-	service_exec(input,output);
 	int clientfd = open_clientfd("127.0.0.1","9002");
+	write(clientfd, input, strlen(input));
+	write(clientfd, "\n",1);
+	service_exec(input,output);
 	write(clientfd, output, strlen(output));
 	close(clientfd);
 	pronounce(output);
