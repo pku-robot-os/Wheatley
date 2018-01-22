@@ -5,4 +5,4 @@ build:
 	gcc Wheatley.c util.c pronounce/pronounce.c ./libmsc.so -lasound -o Wheatley
 	gcc service_management.c server.c -o manager
 clean:
-	rm *.o 
+	rm dialog mic Wheatley manager record/record

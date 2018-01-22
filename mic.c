@@ -32,7 +32,6 @@ int main(int argc, char **argv) {
 	int clientfd;
 	int cnt=0;
 	while(1) {
-		printf("%d\n",state);
 		if (state == 1) {
 			listenwords(str);
 			printf("str=%s\n",str);

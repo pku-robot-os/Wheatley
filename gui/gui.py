@@ -7,7 +7,7 @@ import sys
 import time
 lock = threading.Lock()
 question = ''
-answer = '你好我是Wheatly\n'
+answer = '你好我是Wheatley\n'
 import logging
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
