@@ -12,10 +12,12 @@ firefox
 
 ### Install 
 For x86 user, type `sudo ./build_x86.sh` in the terminal
+
 For x64 user, type `sudo ./build_x64.sh` in the terminal
 
 ### To run
 Type `./Wheatley` in the terminal to talk with our robot.
+
 If you want to add some external services to the robot to make it cleverer, type `./manager` to install them. 
 
 ### Some notices
