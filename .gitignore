@@ -62,3 +62,5 @@ dialog
 manager
 mic
 record/record
+services/tmpin
+services/tmpout
